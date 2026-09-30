@@ -187,6 +187,40 @@ dd{margin:0}
   .books button.bk{padding:4px 0}
   footer{font-size:13px}
 }
+/* ¿Y si no sale? */
+#v-atasco{max-width:640px}
+.qstep{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:0 0 8px}
+.qtext{font:italic 400 clamp(24px,3.4vw,34px)/1.15 var(--serif);margin:0 0 18px;text-wrap:balance}
+.ans{display:block;width:100%;text-align:left;font-size:15px;padding:13px 16px;border:1px solid var(--line);margin-bottom:8px;min-height:50px;transition:border-color .2s,background .2s}
+.ans:hover,.ans:focus-visible{border-color:var(--paper);background:rgba(217,199,163,.06)}
+.ans small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
+.qback{font-size:13px;color:var(--muted);border-bottom:1px solid var(--line);padding:6px 0;margin-top:10px}
+.res{display:grid;gap:22px}
+.res .kick{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--paper)}
+.res h2{font:italic 400 clamp(30px,4vw,44px)/1.05 var(--serif);margin:6px 0 0}
+.res .do{font-size:17px;line-height:1.45;margin:10px 0 0;max-width:46ch}
+.res .ej{border-left:1px solid var(--paper);padding-left:14px;color:var(--muted)}
+.res .ej .k,.res .refl .k{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:4px}
+.res .ej p{font:italic 300 19px/1.35 var(--serif);margin:0;color:var(--ink)}
+.res .combo{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.res .combo span{border:1px solid var(--paper);padding:10px 14px;font:italic 400 20px/1.15 var(--serif);max-width:100%}
+.res .combo em{display:block;font:10.5px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--faint);font-style:normal;margin-bottom:4px}
+.res .refl p{font:italic 300 20px/1.35 var(--serif);margin:0}
+.res .note{font-size:13px;color:var(--muted);margin:10px 0 0}
+.res .actions{margin-top:0}
+@media (max-width:720px){
+  .qtext{font-size:28px}
+  .ans{font-size:17px;padding:15px 16px;min-height:56px}
+  .ans small{font-size:14px}
+  .qback{font-size:16px;padding:12px 0}
+  .qstep,.res .kick,.res .ej .k,.res .refl .k,.res .combo em{font-size:12px}
+  .res .do{font-size:18px}
+  .res .ej p,.res .refl p{font-size:21px}
+  .res .combo span{font-size:22px}
+  .res .note{font-size:15px}
+  .doors{flex-wrap:wrap;gap:4px 22px}
+}
+
 </style>
 
 <header>
@@ -195,6 +229,7 @@ dd{margin:0}
     <button class="door" id="d-trabajar" aria-pressed="true">Trabajar</button>
     <button class="door" id="d-ficheros" aria-pressed="false">Ficheros</button>
     <button class="door" id="d-biblio" aria-pressed="false">Biblioteca</button>
+    <button class="door" id="d-atasco" aria-pressed="false">¿Y si no sale?</button>
   </nav>
   <h1 id="h1">¿Qué quieres trabajar hoy?</h1>
   <div class="fbar" id="fbar">
@@ -221,6 +256,7 @@ dd{margin:0}
     <p class="count" id="bcount"></p>
     <div id="blist"></div>
   </div>
+  <div id="v-atasco" hidden aria-live="polite"></div>
   <div id="v-ficheros" hidden>
     <div id="shelves"></div>
     <p class="legend"><span class="dot azul"></span>Rótulo azul, fácil <span class="dot verde"></span>verde, medio <span class="dot rojo"></span>rojo, difícil <span class="dot negro"></span>negro, sin nivel</p>
@@ -648,15 +684,169 @@ function openDrawer(id){
 $('#fclose').addEventListener('click',()=>$('#fcard').close());
 $('#fcard').addEventListener('click',e=>{ if(e.target===$('#fcard')) $('#fcard').close(); });
 function setDoor(d){
-  for(const [k,id] of [['t','#d-trabajar'],['f','#d-ficheros'],['b','#d-biblio']]) $(id).setAttribute('aria-pressed',String(d===k));
-  $('#v-trabajar').hidden=d!=='t'; $('#v-ficheros').hidden=d!=='f'; $('#v-biblio').hidden=d!=='b';
-  $('#h1').textContent = {t:'¿Qué quieres trabajar hoy?',f:'¿Qué quieres pintar?',b:'¿Qué libro buscas?'}[d];
+  for(const [k,id] of [['t','#d-trabajar'],['f','#d-ficheros'],['b','#d-biblio'],['a','#d-atasco']]) $(id).setAttribute('aria-pressed',String(d===k));
+  $('#v-trabajar').hidden=d!=='t'; $('#v-ficheros').hidden=d!=='f'; $('#v-biblio').hidden=d!=='b'; $('#v-atasco').hidden=d!=='a';
+  $('#h1').textContent = {t:'¿Qué quieres trabajar hoy?',f:'¿Qué quieres pintar?',b:'¿Qué libro buscas?',a:'¿Atascado?'}[d];
   $('#surprise').hidden=d!=='t';
-  $('#fbar').hidden=d==='b'; if(d==='b') $('#filters').hidden=true; $('#topics').hidden=d!=='t'; $('#levels').hidden=d!=='t'; $('#agerow').hidden=false; summary();
+  if(d==='a' && !A.age) askAge();
+  $('#fbar').hidden=d==='b'||d==='a'; if(d==='a') $('#filters').hidden=true; if(d==='b') $('#filters').hidden=true; $('#topics').hidden=d!=='t'; $('#levels').hidden=d!=='t'; $('#agerow').hidden=false; summary();
 }
 $('#d-trabajar').addEventListener('click',()=>setDoor('t'));
 $('#d-ficheros').addEventListener('click',()=>setDoor('f'));
 $('#d-biblio').addEventListener('click',()=>setDoor('b'));
+$('#d-atasco').addEventListener('click',()=>{ A.age=null; setDoor('a'); });
+/* ¿Y si no sale? · preguntas de la caja de bloqueos */
+const A={age:null,prob:null,step:0,hist:[],pool:[],i:0};
+const AGES=[["n","Tengo menos de 12 años"],["a","Tengo entre 12 y 17"],["d","Soy adulto"]];
+const PROBS={
+ n:[["blanco","No sé qué dibujar"],["tec","No me sale como quiero"],["miedo","Me da miedo que quede feo"],["rutina","Me aburro de hacer siempre lo mismo"]],
+ a:[["blanco","No sé qué hacer","La hoja en blanco"],["tec","Sé lo que quiero, pero no me sale","Es un problema técnico"],["miedo","Me da miedo estropearlo"],["rutina","Siempre hago lo mismo"],["exceso","Tengo demasiadas ideas y no empiezo ninguna"]],
+ d:[["blanco","No sé qué hacer","La hoja en blanco"],["tec","Sé lo que quiero, pero no me sale","Es un problema técnico"],["miedo","Me da miedo estropearlo"],["rutina","Siempre hago lo mismo"],["exceso","Tengo demasiadas ideas y no empiezo ninguna"]]
+};
+const TIMES=[[10,"10 minutos","Algo para arrancar"],[30,"Toda la clase"],[99,"Varias clases","Un proyecto largo"]];
+const TEC=[["prop","No se parece a lo que veo","Proporciones, formas"],["plano","Queda plano","Le falta volumen, luz y sombra"],["rigido","Está rígido","Sin movimiento, sin vida"],["color","Los colores no funcionan"]];
+const DECK={blanco:"Por dónde empiezo",miedo:"Y si lo estropeo",rutina:null,exceso:"Párate a mirar",tec:"Cartas para empezar · tensión técnica",combo:"Cartas para empezar"};
+
+/* m: minutos · g: edades (n menos de 12, a 12-17, d adultos) · w: web del mosaico · f: ficheros · b: libro */
+const CARDS=[
+ // Por dónde empiezo
+ {p:"blanco",m:10,g:"na",t:"Mira a tu alrededor",d:"Dibuja el primer objeto que veas. Sin pensar mucho.",e:"Hay una taza en la mesa. Dibújala tal cual, con su asa, sin borrar.",f:["bodegones"]},
+ {p:"blanco",m:10,g:"nad",t:"Garabato con secreto",d:"Garabatea libre y busca qué formas se esconden. Remarca la que encuentres.",e:"En unas espirales apareció un caracol. Lo remarcas y le pones casa."},
+ {p:"blanco",m:10,g:"nad",t:"Dos minutos sin parar",d:"Lápiz en el papel dos minutos sin levantarlo. Sigue desde lo que haya salido.",e:"Empiezas con una raya, sigues con círculos, y sale un paisaje."},
+ {p:"blanco",m:10,g:"n",t:"El animal secreto",d:"Cierra los ojos, imagina un animal y dibújalo de memoria.",e:"Imaginaste un elefante con alas. Dibújalo como lo viste.",f:["terrestres","aereos","marinos"]},
+ {p:"blanco",m:10,g:"n",t:"Grande y pequeño",d:"Algo enorme y algo diminuto en la misma hoja.",e:"Una hormiga gigante al lado de una montaña diminuta."},
+ {p:"blanco",m:10,g:"ad",t:"El contrario",d:"Di en voz baja qué ibas a hacer. Ahora haz justo lo opuesto.",e:"Ibas a dibujar algo ordenado. Hazlo caótico a propósito."},
+ {p:"blanco",m:10,g:"ad",t:"Las palabras primero",d:"Escribe en dos palabras qué quieres que se sienta. Dibuja esa sensación.",e:"Escribes «tormenta lejana» y pintas la sensación, sin nubes literales."},
+ {p:"blanco",m:30,g:"ad",t:"Mira cómo lo hizo otro",d:"Cinco minutos delante de un cuadro. Apunta qué eligió el pintor y qué dejó fuera. Después haz lo mismo con lo tuyo.",e:"En un Vermeer: eligió una ventana lateral y dejó el fondo casi vacío.",w:"rijks"},
+ {p:"blanco",m:99,g:"d",t:"Define el problema",d:"Escribe en una frase qué pregunta responde tu cuadro. Pinta para contestarla.",e:"«¿Qué queda de un lugar cuando ya no vives en él?»"},
+ // Y si lo estropeo
+ {p:"miedo",m:10,g:"nad",t:"La línea que no para",d:"Una sola línea, sin levantar el lápiz, por toda la hoja.",e:"Una línea que dibuja una casa, un árbol y un sol sin separarse."},
+ {p:"miedo",m:10,g:"nad",t:"Con la otra mano",d:"Dibuja con la mano que no usas. Nadie espera que salga bien.",e:"Si eres diestro, con la izquierda: tu cara, sin mirar el papel."},
+ {p:"miedo",m:10,g:"nad",t:"Diez minutos sin juzgar",d:"Diez minutos seguidos. Sin borrar, sin parar a mirar si está bien.",e:"Dibuja tu mano diez minutos sin parar a comprobar nada."},
+ {p:"miedo",m:10,g:"a",t:"Lo que sale se queda",d:"Hoy no se borra nada. Si una línea sale mal, dibuja otra encima.",e:"El brazo te quedó largo: haz el bueno al lado y deja los dos."},
+ {p:"miedo",m:10,g:"ad",t:"Para tirarlo",d:"Haz este dibujo sabiendo que lo vas a tirar al acabar.",e:"Un papel de periódico o de embalar, para que no dé pena."},
+ {p:"miedo",m:30,g:"ad",t:"Cinco en vez de uno",d:"Cinco versiones rápidas de la misma idea. Ninguna tiene que ser la buena.",e:"El mismo jarrón cinco veces, cada una con un encuadre distinto."},
+ {p:"miedo",m:30,g:"a",t:"Lo que evitas",d:"Piensa qué evitas dibujar desde hace tiempo. Hoy dibuja solo eso.",e:"Si evitas las caras, hoy solo caras. Aunque salgan mal.",f:["retratos"]},
+ {p:"miedo",m:30,g:"d",t:"Quince minutos antes de juzgar",d:"Trabaja quince minutos antes de mirar lo que tienes con ojo crítico.",e:"Llevas años pintando y por eso te exiges más. Dale quince minutos."},
+ // Siempre hago lo mismo
+ {p:"rutina",m:10,g:"nad",t:"Copia una textura",d:"La textura más cercana, tal cual es. Sin inventar nada.",e:"La madera de la mesa, el ladrillo de la pared, tu jersey.",f:["textura"]},
+ {p:"rutina",m:10,g:"nad",t:"Herramienta nueva",d:"Cambia de material: carboncillo, rotulador, tinta o acuarela.",e:"Si siempre pintas con pincel fino, hoy uno gordo.",f:["tinta","cretas"]},
+ {p:"rutina",m:10,g:"ad",t:"Cambia de escala",d:"Si siempre usas A4, pasa a A3. O a algo diminuto.",e:"El retrato que ibas a hacer en A4, del tamaño de un sello."},
+ {p:"rutina",m:10,g:"ad",t:"La restricción absurda",d:"Una regla rara para todo el dibujo.",e:"Solo líneas verticales. Nada de curvas."},
+ {p:"rutina",m:10,g:"d",t:"Un color que no usarías",d:"Elige el color que nunca pones y haz que mande en el cuadro.",e:"Si nunca usas el rosa, hoy el fondo entero rosa.",w:"coolors"},
+ {p:"rutina",m:10,g:"d",t:"Empieza por el otro lado",d:"Empieza por donde nunca empiezas.",e:"El fondo primero. La figura, al final."},
+ {p:"rutina",m:30,g:"ad",t:"Material encontrado",d:"Trabaja sobre algo que no sea material de arte.",e:"Una página de periódico, dejando ver el texto."},
+ {p:"rutina",m:30,g:"ad",t:"Rómpelo y recomponlo",d:"Rompe un boceto viejo en tiras y pégalas formando otra imagen.",e:"Un paisaje cortado en tiras verticales, recolocado como una ciudad."},
+ {p:"rutina",m:30,g:"ad",t:"Un movimiento que no conoces",d:"Diez minutos mirando un movimiento que no dominas. El resto, un apunte a su manera.",e:"Si nunca miraste a Malévich, empieza por el suprematismo.",w:"wikiart",f:["abstracto"]},
+ {p:"rutina",m:30,g:"d",t:"Cambia de formato a mitad",d:"Empieza en vertical. A mitad, gira la hoja y sigue en horizontal.",e:"El retrato se convierte en paisaje con la misma mancha."},
+ // Demasiadas ideas
+ {p:"exceso",m:10,g:"ad",t:"La primera",d:"Si tienes tres ideas a la vez, elige la primera que pensaste y empieza ya.",e:"Las otras dos, apuntadas en una esquina. Mañana."},
+ {p:"exceso",m:10,g:"ad",t:"Una miniatura por idea",d:"Cada idea en una miniatura de dos minutos, del tamaño de un sello. Sigue con la que más te tire.",e:"Cuatro recuadros de 5 × 7 cm en una hoja. Uno por idea."},
+ {p:"exceso",m:30,g:"ad",t:"Cinco variaciones",d:"Coge una sola idea y haz cinco variaciones rápidas. Las demás esperan.",e:"El mismo árbol cinco veces, cambiando solo el punto de vista."},
+
+ // Proyecto largo
+ {p:"blanco",m:99,g:"n",t:"Un cuento sin palabras",d:"Cuenta una historia en cuatro viñetas, sin escribir nada.",e:"Un gato sube a un árbol, no sabe bajar, llega un pájaro, baja volando."},
+ {p:"blanco",m:99,g:"n",t:"Un lugar que no existe",d:"Dibuja un sitio en el que te gustaría vivir. Una clase para el sitio, otra para lo que pasa en él.",e:"Una casa dentro de una ballena, con ventanas en las aletas.",f:["fantasia"]},
+ {p:"blanco",m:99,g:"ad",t:"Una serie de tres",d:"Un mismo tema en tres obras, cada una con una técnica distinta.",e:"Tu calle a grafito, en acuarela y en collage.",f:["urbano"]},
+ {p:"blanco",m:99,g:"a",t:"Tu proyecto, con reglas",d:"Tema tuyo. A3, técnica mixta. Una clase de bocetos antes de empezar.",e:"«Mi habitación de noche»: tres miniaturas el primer día y eliges una."},
+ {p:"miedo",m:99,g:"ad",t:"Pruébalo aparte",d:"Antes de tocar el cuadro, prueba el cambio en otro papel o sobre una foto impresa.",e:"No sabes si oscurecer el fondo. Fotocópialo y píntalo ahí primero."},
+ {p:"miedo",m:99,g:"ad",t:"Foto de cada fase",d:"Al acabar cada clase, una foto y una línea de lo que piensas. Si lo estropeas, sabes dónde estabas.",e:"Foto del lienzo a medias y «hoy dudé del fondo» escrito al lado."},
+ {p:"miedo",m:99,g:"n",t:"Primero en pequeño",d:"Haz tu dibujo en pequeño antes de hacerlo en grande.",e:"Un boceto del tamaño de la mano. Luego el grande."},
+ {p:"rutina",m:99,g:"nad",t:"Mismo tema, otra técnica",d:"Coge un trabajo tuyo que ya esté acabado y repítelo con una técnica que no domines.",e:"Tu bodegón de grafito, ahora en tinta con palito.",f:["tinta"]},
+ {p:"rutina",m:99,g:"ad",t:"Copia a un maestro, un trozo",d:"Elige un cuadro y copia solo una zona: una mano, un trozo del fondo. Luego úsalo en lo tuyo.",e:"La mano de una Anunciación. Después, esa luz en tu retrato.",w:"prado",f:["historicas"]},
+ {p:"exceso",m:99,g:"ad",t:"¿Es una serie?",d:"Si tus ideas hablan de lo mismo, puede que sea una serie. Una idea por obra, en orden.",e:"Tres ideas sobre tu barrio: la calle, el portal, la ventana. Tres cuadros."},
+ // No me sale: técnica
+ {p:"tec",s:"prop",g:"n",t:"Mira más de lo que dibujas",d:"Recorre despacio el borde de un objeto con la vista, y a la vez con el lápiz.",e:"Un zapato. Tardas cinco minutos solo en su borde.",f:["bodegones"],b:"Dibujo creativo"},
+ {p:"tec",s:"prop",g:"a",t:"Solo contorno, sin mirar el papel",d:"Mira el modelo, no la hoja. El lápiz va al ritmo del ojo.",e:"Tu mano, cinco minutos, sin mirar la hoja ni una vez.",f:["ejgrafito"],b:"Lea este libro si quiere hacer buenos dibujos"},
+ {p:"tec",s:"prop",g:"d",t:"Dibuja el espacio vacío",d:"Dibuja los huecos que hay alrededor y entre las cosas, no las cosas.",e:"Una silla: dibuja el aire entre sus patas y la silla aparece sola.",f:["bodegones","interiores"],b:"Lea este libro si quiere hacer buenos dibujos"},
+ {p:"tec",s:"prop",g:"d",t:"Dale la vuelta",d:"Gira la referencia 180° y dibuja lo que ves así, cabeza abajo.",e:"Un retrato del fichero, del revés. Ya no ves una cara, ves formas.",f:["retratos"]},
+ {p:"tec",s:"plano",g:"n",t:"Cinco grises",d:"Haz una escala de cinco grises bien distintos, del blanco al negro. Dibuja una fruta usando solo esos cinco.",e:"Una manzana: el más claro donde brilla, el más oscuro debajo.",f:["ejgrafito"],b:"Luz y sombra en el dibujo"},
+ {p:"tec",s:"plano",g:"a",t:"Solo masa y sombra",d:"Sin línea de contorno. Dibuja con manchas de sombra.",e:"Un bodegón con una luz de lado: primero la sombra más oscura, luego la media.",w:"posemyart",f:["ejgrafito"],b:"El claroscuro"},
+ {p:"tec",s:"plano",g:"d",t:"Solo con la sombra",d:"Nada de línea. Mancha las sombras y deja que la luz sea el papel.",e:"Mira cómo pinta Vermeer la luz en La lechera antes de empezar.",w:"rijks",f:["grafito"],b:"El claroscuro"},
+ {p:"tec",s:"rigido",g:"n",t:"Tres poses de dos minutos",d:"Un compañero posa. Dos minutos por pose. Cambia de pose aunque no hayas acabado.",e:"De pie, sentado y agachado a coger algo.",f:["figura"]},
+ {p:"tec",s:"rigido",g:"a",t:"Solo gesto, un minuto",d:"Poses de un minuto. Solo la línea que atraviesa el cuerpo. Ni caras ni manos.",e:"Una curva de la cabeza al pie que carga el peso. Luego lo demás.",w:"quickposes",f:["figura","escenas"],b:"Los cuadernos del dibujante · Figuras en movimiento"},
+ {p:"tec",s:"rigido",g:"d",t:"Contorno ciego, sin corregir",d:"Poses de tres minutos sin mirar el papel. Lo que salga no se corrige.",e:"Diez poses seguidas. No importa cuál sale torcida.",w:"loa",f:["figura"],b:"Los cuadernos del dibujante · Figuras en movimiento"},
+ {p:"tec",s:"color",g:"n",t:"Cálidos y fríos",d:"Pinta lo mismo dos veces. Una solo con colores cálidos y otra solo con fríos.",e:"El mismo árbol: uno rojo y naranja, otro azul y verde.",w:"coolors",b:"El secreto de los colores"},
+ {p:"tec",s:"color",g:"a",t:"La sombra, del color contrario",d:"Pinta las sombras con el complementario, no con negro.",e:"Una naranja con la sombra azulada.",w:"adobecolor",b:"Guía práctica de la mezcla de colores"},
+ {p:"tec",s:"color",g:"d",t:"Un gris sin negro",d:"Consigue un gris neutro mezclando solo complementarios. Después úsalo para calmar el resto.",e:"Rojo y verde hasta que ninguno gane.",w:"handprint",b:"Guía visual práctica para la mezcla de colores"}
+];
+const COMBO={
+ n:{c:["Casa","Árbol","Una persona o un animal","Cielo","Montaña","Mar"],t:["Dentro de una casa","De noche","Muy de cerca","Visto desde arriba, como un pájaro","Algo roto o torcido","Con colores complementarios"]},
+ a:{c:["Objeto cotidiano","Animal","Persona","Edificio o ciudad","Elemento natural","Cielo o luz"],t:["Composición muy recortada, casi te sales del papel","Dos elementos que no encajan: resuélvelo igual","Vista de pájaro","Colores complementarios","Algo roto o torcido","Un solo objeto ocupa toda la hoja"]},
+ d:{c:["Un recuerdo","Algo con historia","Alguien importante","Un lugar al que no puedes volver","Algo que te da un poco de miedo","Un contraste, dos cosas opuestas"],t:["Un color que normalmente no usarías","Empieza por el fondo","Algo que no tiene por qué gustarte al terminar","Cambia de formato a mitad","Une dos referencias que no tienen nada que ver","Hazlo sabiendo que lo vas a tirar después"]}
+};
+const COMBO_F={"Casa":["urbano"],"Árbol":["naturaleza","paisajes"],"Una persona o un animal":["figura","terrestres"],"Cielo":["paisajes"],"Montaña":["paisajes"],"Mar":["marinos","paisajes"],
+ "Objeto cotidiano":["bodegones"],"Animal":["terrestres","aereos"],"Persona":["figura","retratos"],"Edificio o ciudad":["urbano"],"Elemento natural":["naturaleza","flores"],"Cielo o luz":["paisajes"],
+ "Un recuerdo":["modelos"],"Algo con historia":["historicas","bodegones"],"Alguien importante":["retratos"],"Un lugar al que no puedes volver":["paisajes","urbano"],"Algo que te da un poco de miedo":["fantasia"],"Un contraste, dos cosas opuestas":["abstracto"]};
+const REFL={blanco:"¿Qué quiero expresar de verdad, más allá de la técnica?",miedo:"Si no tuviera miedo de que quedara mal, ¿qué haría ahora mismo?",rutina:"¿Qué solución estoy evitando porque me da miedo usarla?",exceso:"¿Qué quiero expresar de verdad? Quédate con la idea que lo dice mejor.",tec:"¿No lo ves o no te sale? Si no lo ves, mira más tiempo. Si no te sale, repítelo más veces."};
+
+const av=$('#v-atasco');
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a;};
+function ask(step,total,q,opts,onPick,back){
+  av.replaceChildren();
+  const s=document.createElement('p'); s.className='qstep'; s.textContent='Pregunta '+step+' de '+total; av.append(s);
+  const h=document.createElement('p'); h.className='qtext'; h.textContent=q; av.append(h);
+  for(const [v,l,sm] of opts){ const b=document.createElement('button'); b.className='ans'; b.textContent=l;
+    if(sm){ const x=document.createElement('small'); x.textContent=sm; b.append(x); }
+    b.addEventListener('click',()=>onPick(v)); av.append(b); }
+  if(back){ const b=document.createElement('button'); b.className='qback'; b.textContent='← Atrás'; b.addEventListener('click',back); av.append(b); }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function askAge(){ A.age=null; ask(1,3,'Antes de nada, ¿cuántos años tienes?',AGES,v=>{A.age=v; askProb();}); }
+function askProb(){ ask(2,3,A.age==='n'?'¿Qué te pasa?':'¿Qué te está pasando?',PROBS[A.age],v=>{A.prob=v; v==='tec'?askTec():askTime();},askAge); }
+function askTime(){ ask(3,3,'¿Cuánto tiempo tienes?',TIMES,v=>{A.time=+v; build();},askProb); }
+function askTec(){ ask(3,3,'¿Qué es lo que falla?',TEC,v=>{A.tec=v; build();},askProb); }
+function build(){
+  const ok=c=>c.p===A.prob && c.g.includes(A.age);
+  let pool;
+  if(A.prob==='tec'){ pool=CARDS.filter(c=>ok(c)&&c.s===A.tec); if(!pool.length) pool=CARDS.filter(c=>c.p==='tec'&&c.s===A.tec); }
+  else if(A.prob==='blanco' && A.time===30){ pool=['combo']; }
+  else { pool=CARDS.filter(c=>ok(c)&&c.m===A.time); if(!pool.length) pool=CARDS.filter(c=>ok(c)&&c.m<=A.time); if(!pool.length) pool=CARDS.filter(ok); if(!pool.length) pool=CARDS.filter(c=>c.p===A.prob); }
+  A.pool=shuffle(pool); A.i=0; result();
+}
+function chip(txt,fn){ const c=document.createElement('button'); c.className='chip'; c.textContent=txt; c.addEventListener('click',fn); return c; }
+function result(){
+  const minor=A.age!=='d'; const c=A.pool[A.i%A.pool.length];
+  av.replaceChildren(); const r=document.createElement('div'); r.className='res'; av.append(r);
+  const top=document.createElement('div'); r.append(top);
+  const k=document.createElement('div'); k.className='kick'; top.append(k);
+  let fich=[], web=null, book=null, deck=DECK[A.prob];
+  if(c==='combo'){
+    const d=COMBO[A.age], ci=rnd(d.c), ti=rnd(d.t);
+    k.textContent='Saca dos cartas';
+    const h=document.createElement('h2'); h.textContent='Esto, con esta condición'; top.append(h);
+    const cb=document.createElement('div'); cb.className='combo';
+    cb.innerHTML=`<span><em>Qué</em>${ci}</span><span><em>Cómo</em>${ti}</span>`; top.append(cb);
+    const p=document.createElement('p'); p.className='do'; p.textContent= A.time>=30 ? 'Primero tres miniaturas pequeñas, de dos minutos cada una. Luego desarrolla la que mejor funcione.' : 'Diez minutos. No busques que quede bonito: busca resolver la condición.'; top.append(p);
+    if(ti.includes('complementarios') && A.age==='n'){ const n=document.createElement('p'); n.className='note'; n.textContent='Complementarios son los colores contrarios en la rueda: rojo y verde, azul y naranja, amarillo y morado.'; top.append(n); }
+    fich=COMBO_F[ci]||[]; deck=DECK.combo;
+  } else {
+    k.textContent = A.prob==='tec' ? 'Haz esto' : ({10:'10 minutos',30:'Toda la clase',99:'Proyecto de varias clases'})[c.m];
+    const h=document.createElement('h2'); h.textContent=c.t; top.append(h);
+    const p=document.createElement('p'); p.className='do'; p.textContent=c.d; top.append(p);
+    const e=document.createElement('div'); e.className='ej'; e.innerHTML='<div class="k">Por ejemplo</div>'; const ep=document.createElement('p'); ep.textContent=c.e; e.append(ep); r.append(e);
+    fich=c.f||[]; web=c.w||null; book=c.b||null;
+  }
+  if(web && minor && ADULT.has(web)) web='quickposes';
+  const sala=document.createElement('div'); sala.className='sala';
+  sala.innerHTML='<div class="k">Dónde mirar</div>';
+  const sp=document.createElement('p'); sp.textContent = c==='combo' ? 'Estas cartas están en la caja «¿Y si no sale?», mazo «Cartas para empezar». Puedes sacarlas tú.' : deck ? 'Hay más como esta en la caja «¿Y si no sale?», mazo «'+deck+'».' : 'Hay más como esta en la caja «¿Y si no sale?».'; sala.append(sp);
+  const lr=document.createElement('div'); lr.className='linkrow';
+  for(const id of fich){ if(DR[id]) lr.append(chip('Fichero '+DR[id].n,()=>{setDoor('f'); openDrawer(id);})); }
+  if(web){ const w=R.find(x=>x.id===web); if(w) lr.append(chip(w.name+' ↗',()=>openCard(w))); }
+  if(book) lr.append(chip(book,()=>goBook(book)));
+  if(lr.children.length) sala.append(lr);
+  r.append(sala);
+  if(A.age!=='n'){ const q=document.createElement('div'); q.className='refl'; q.innerHTML='<div class="k">Párate a mirar</div>'; const qp=document.createElement('p'); qp.textContent=REFL[A.prob]; q.append(qp); r.append(q); }
+  const act=document.createElement('div'); act.className='actions';
+  const again=document.createElement('button'); again.className='go'; again.textContent= c==='combo' ? 'Otras dos cartas' : 'Otra idea'; again.addEventListener('click',()=>{A.i++; result(); window.scrollTo({top:0,behavior:'smooth'});});
+  if(c==='combo' || A.pool.length>1) act.append(again);
+  const re=document.createElement('button'); re.className='save'; re.textContent='Empezar otra vez'; re.addEventListener('click',askAge); act.append(re);
+  r.append(act);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
 const bstate={balda:null};
 const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 (function(){ const el=$('#baldas'); const all=document.createElement('button'); all.className='opt'; all.textContent='Todas'; all.dataset.v=''; el.append(all);
@@ -690,7 +880,6 @@ $('#q').addEventListener('input',renderBooks);
 renderBooks();
 if(location.hash==='#ficheros') setDoor('f');
 if(location.hash==='#biblioteca') setDoor('b');
+if(location.hash==='#atasco') setDoor('a');
 render();
 </script>
-
-</body></html>
