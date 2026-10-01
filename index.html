@@ -709,66 +709,149 @@ const DECK={blanco:"Por dónde empiezo",miedo:"Y si lo estropeo",rutina:null,exc
 
 /* m: minutos · g: edades (n menos de 12, a 12-17, d adultos) · w: web del mosaico · f: ficheros · b: libro */
 const CARDS=[
- // Por dónde empiezo
+ // ── No sé qué hacer · 10 minutos
  {p:"blanco",m:10,g:"na",t:"Mira a tu alrededor",d:"Dibuja el primer objeto que veas. Sin pensar mucho.",e:"Hay una taza en la mesa. Dibújala tal cual, con su asa, sin borrar.",f:["bodegones"]},
  {p:"blanco",m:10,g:"nad",t:"Garabato con secreto",d:"Garabatea libre y busca qué formas se esconden. Remarca la que encuentres.",e:"En unas espirales apareció un caracol. Lo remarcas y le pones casa."},
  {p:"blanco",m:10,g:"nad",t:"Dos minutos sin parar",d:"Lápiz en el papel dos minutos sin levantarlo. Sigue desde lo que haya salido.",e:"Empiezas con una raya, sigues con círculos, y sale un paisaje."},
+ {p:"blanco",m:10,g:"nad",t:"Tres colores al azar",d:"Coge tres colores sin mirar y úsalos todos. No vale cambiar.",e:"Te tocan azul, amarillo y rosa. Un pez con esos tres."},
  {p:"blanco",m:10,g:"n",t:"El animal secreto",d:"Cierra los ojos, imagina un animal y dibújalo de memoria.",e:"Imaginaste un elefante con alas. Dibújalo como lo viste.",f:["terrestres","aereos","marinos"]},
  {p:"blanco",m:10,g:"n",t:"Grande y pequeño",d:"Algo enorme y algo diminuto en la misma hoja.",e:"Una hormiga gigante al lado de una montaña diminuta."},
  {p:"blanco",m:10,g:"ad",t:"El contrario",d:"Di en voz baja qué ibas a hacer. Ahora haz justo lo opuesto.",e:"Ibas a dibujar algo ordenado. Hazlo caótico a propósito."},
  {p:"blanco",m:10,g:"ad",t:"Las palabras primero",d:"Escribe en dos palabras qué quieres que se sienta. Dibuja esa sensación.",e:"Escribes «tormenta lejana» y pintas la sensación, sin nubes literales."},
- {p:"blanco",m:30,g:"ad",t:"Mira cómo lo hizo otro",d:"Cinco minutos delante de un cuadro. Apunta qué eligió el pintor y qué dejó fuera. Después haz lo mismo con lo tuyo.",e:"En un Vermeer: eligió una ventana lateral y dejó el fondo casi vacío.",w:"rijks"},
+ {p:"blanco",m:10,g:"ad",t:"Vacía el estuche",d:"Saca lo que llevas en el estuche o en el bolsillo. Dibújalo como lo dejaste caer.",e:"Llaves, un clip, una goma mordida. Ninguno colocado."},
+ // ── No sé qué hacer · proyecto de varias clases
+ {p:"blanco",m:99,g:"n",t:"Un cuento sin palabras",d:"Cuenta una historia en cuatro viñetas, sin escribir nada.",e:"Un gato sube a un árbol, no sabe bajar, llega un pájaro, baja volando."},
+ {p:"blanco",m:99,g:"n",t:"Un lugar que no existe",d:"Dibuja un sitio en el que te gustaría vivir. Una clase para el sitio, otra para lo que pasa en él.",e:"Una casa dentro de una ballena, con ventanas en las aletas.",f:["fantasia"]},
+ {p:"blanco",m:99,g:"n",t:"El mapa de tu mundo",d:"Inventa un país y dibuja su mapa. Montañas, ríos, ciudades y sus nombres.",e:"La isla de los gatos, con un volcán de leche en el centro."},
+ {p:"blanco",m:99,g:"n",t:"El animal que nadie ha visto",d:"Junta partes de animales de verdad en uno solo. Luego dibújalo en su casa.",e:"Cabeza de búho, cuerpo de tortuga y patas de rana.",f:["terrestres","aereos","marinos"]},
+ {p:"blanco",m:99,g:"na",t:"Ilustra una canción",d:"Elige una canción que te guste y dibuja lo que pasa en ella. Sin escribir la letra.",e:"La canción del verano, en una sola imagen."},
+ {p:"blanco",m:99,g:"ad",t:"Una serie de tres",d:"Un mismo tema en tres obras, cada una con una técnica distinta.",e:"Tu calle a grafito, en acuarela y en collage.",f:["urbano"]},
+ {p:"blanco",m:99,g:"ad",t:"El objeto más aburrido",d:"Elige lo más aburrido que haya en la sala y dibújalo en cinco estilos distintos.",e:"Un rollo de cinta: realista, cómic, geométrico, a manchas, en una sola línea.",f:["bodegones"]},
+ {p:"blanco",m:99,g:"a",t:"Tu proyecto, con reglas",d:"Tema tuyo. A3, técnica mixta. Una clase de bocetos antes de empezar.",e:"«Mi habitación de noche»: tres miniaturas el primer día y eliges una."},
+ {p:"blanco",m:99,g:"a",t:"Cinco autorretratos",d:"Tu cara cinco veces: realista, caricatura, geométrica, según cómo te sientes y como un símbolo.",e:"El quinto puede ser solo tus gafas y tu flequillo.",f:["retratos"]},
+ {p:"blanco",m:99,g:"d",t:"Un lugar al que no puedes volver",d:"Pinta de memoria un sitio que ya no existe para ti. Varias versiones, sin buscar fotos.",e:"La cocina de la casa de tus abuelos, tres veces, cada vez con menos detalle.",f:["interiores","paisajes"]},
  {p:"blanco",m:99,g:"d",t:"Define el problema",d:"Escribe en una frase qué pregunta responde tu cuadro. Pinta para contestarla.",e:"«¿Qué queda de un lugar cuando ya no vives en él?»"},
- // Y si lo estropeo
+ {p:"blanco",m:99,g:"d",t:"Copia y traiciona",d:"Elige un cuadro de un maestro y pinta tu versión cambiando una sola decisión.",e:"Un bodegón de Zurbarán con luz de mediodía en vez de su fondo negro.",w:"prado",f:["historicas"]},
+ // ── Me da miedo estropearlo · 10 minutos
  {p:"miedo",m:10,g:"nad",t:"La línea que no para",d:"Una sola línea, sin levantar el lápiz, por toda la hoja.",e:"Una línea que dibuja una casa, un árbol y un sol sin separarse."},
  {p:"miedo",m:10,g:"nad",t:"Con la otra mano",d:"Dibuja con la mano que no usas. Nadie espera que salga bien.",e:"Si eres diestro, con la izquierda: tu cara, sin mirar el papel."},
  {p:"miedo",m:10,g:"nad",t:"Diez minutos sin juzgar",d:"Diez minutos seguidos. Sin borrar, sin parar a mirar si está bien.",e:"Dibuja tu mano diez minutos sin parar a comprobar nada."},
+ {p:"miedo",m:10,g:"nad",t:"A ciegas",d:"Mira el objeto, no el papel. Va a salir raro. Así tiene que salir.",e:"Tu zapato, sin mirar la hoja ni una vez. Luego míralo y ríete."},
+ {p:"miedo",m:10,g:"n",t:"Rotulador, sin lápiz",d:"Dibuja directamente con rotulador. Si una raya sale mal, conviértela en otra cosa.",e:"La raya torcida se convierte en el rabo de un gato."},
  {p:"miedo",m:10,g:"a",t:"Lo que sale se queda",d:"Hoy no se borra nada. Si una línea sale mal, dibuja otra encima.",e:"El brazo te quedó largo: haz el bueno al lado y deja los dos."},
  {p:"miedo",m:10,g:"ad",t:"Para tirarlo",d:"Haz este dibujo sabiendo que lo vas a tirar al acabar.",e:"Un papel de periódico o de embalar, para que no dé pena."},
- {p:"miedo",m:30,g:"ad",t:"Cinco en vez de uno",d:"Cinco versiones rápidas de la misma idea. Ninguna tiene que ser la buena.",e:"El mismo jarrón cinco veces, cada una con un encuadre distinto."},
+ // ── Me da miedo estropearlo · toda la clase
+ {p:"miedo",m:30,g:"nad",t:"Cinco en vez de uno",d:"Cinco versiones rápidas de la misma idea. Ninguna tiene que ser la buena.",e:"El mismo jarrón cinco veces, cada una con un encuadre distinto."},
+ {p:"miedo",m:30,g:"nad",t:"Sin lápiz, directo al pincel",d:"Nada de boceto. Empieza a pintar con el pincel desde el primer momento.",e:"Un bodegón de tres frutas, mancha a mancha."},
+ {p:"miedo",m:30,g:"n",t:"La mancha a propósito",d:"Echa una mancha de pintura en el papel a propósito. Ahora conviértela en algo.",e:"Una mancha azul se convierte en un pez, un charco o una nube."},
+ {p:"miedo",m:30,g:"na",t:"Tinta con palito",d:"Moja un palito en tinta china y dibuja. No controlas el trazo y ese es el ejercicio.",e:"Un árbol con un palito: las ramas salen solas, gordas y finas.",f:["tinta"]},
+ {p:"miedo",m:30,g:"n",t:"Con los dedos",d:"Pinta sin pincel, solo con los dedos.",e:"Un cielo de tormenta, arrastrando el gris con la palma."},
  {p:"miedo",m:30,g:"a",t:"Lo que evitas",d:"Piensa qué evitas dibujar desde hace tiempo. Hoy dibuja solo eso.",e:"Si evitas las caras, hoy solo caras. Aunque salgan mal.",f:["retratos"]},
+ {p:"miedo",m:30,g:"ad",t:"Carboncillo y goma",d:"Mancha todo el papel de gris con carboncillo y saca las luces con la goma. Nada es definitivo.",e:"Una cara que aparece de la niebla a goma.",f:["grafito"],b:"El claroscuro"},
  {p:"miedo",m:30,g:"d",t:"Quince minutos antes de juzgar",d:"Trabaja quince minutos antes de mirar lo que tienes con ojo crítico.",e:"Llevas años pintando y por eso te exiges más. Dale quince minutos."},
- // Siempre hago lo mismo
+ {p:"miedo",m:30,g:"d",t:"La solución que no usas",d:"Hay algo que sabes hacer y no te atreves a usar. Úsalo hoy.",e:"Evitas el rojo desde hace meses. Hoy, el rojo manda."},
+ // ── Me da miedo estropearlo · proyecto
+ {p:"miedo",m:99,g:"nad",t:"Primero en pequeño",d:"Haz tu dibujo en pequeño antes de hacerlo en grande.",e:"Un boceto del tamaño de la mano. Luego el grande."},
+ {p:"miedo",m:99,g:"nad",t:"Foto de cada fase",d:"Al acabar cada clase, una foto. Si lo estropeas, sabes dónde estabas.",e:"Foto del lienzo a medias y «hoy dudé del fondo» escrito al lado."},
+ {p:"miedo",m:99,g:"n",t:"Prueba en un trozo",d:"Antes de pintar el grande, prueba los colores en un papel aparte.",e:"Una tira de papel con el verde que quieres para el árbol."},
+ {p:"miedo",m:99,g:"n",t:"Por partes",d:"No hace falta acabarlo hoy. Cada clase, una parte.",e:"Hoy el cielo. El próximo día, la casa."},
+ {p:"miedo",m:99,g:"n",t:"Guarda los bocetos",d:"Pega tus bocetos detrás del dibujo final. Cuentan cómo lo hiciste.",e:"Tres bocetos torcidos y, delante, el dibujo bueno."},
+ {p:"miedo",m:99,g:"ad",t:"Pruébalo aparte",d:"Antes de tocar el cuadro, prueba el cambio en otro papel o sobre una foto impresa.",e:"No sabes si oscurecer el fondo. Fotocópialo y píntalo ahí primero."},
+ {p:"miedo",m:99,g:"ad",t:"Una clase para arriesgar",d:"Reserva una clase entera para probar lo que no te atreves. Si sale mal, vuelves a la foto.",e:"Hoy repinto el fondo entero. Tengo la foto de ayer."},
+ {p:"miedo",m:99,g:"ad",t:"Capas que se tapan",d:"Trabaja por capas. Lo de abajo siempre se puede cubrir.",e:"Primera capa en naranja; si no funciona, el azul la tapa."},
+ {p:"miedo",m:99,g:"a",t:"Una sola cosa",d:"Enseña tu trabajo a medias a un compañero. Pídele una sola cosa que cambiaría.",e:"«Le subiría el horizonte.» Solo eso. Lo pruebas o no."},
+ // ── Siempre hago lo mismo · 10 minutos
  {p:"rutina",m:10,g:"nad",t:"Copia una textura",d:"La textura más cercana, tal cual es. Sin inventar nada.",e:"La madera de la mesa, el ladrillo de la pared, tu jersey.",f:["textura"]},
  {p:"rutina",m:10,g:"nad",t:"Herramienta nueva",d:"Cambia de material: carboncillo, rotulador, tinta o acuarela.",e:"Si siempre pintas con pincel fino, hoy uno gordo.",f:["tinta","cretas"]},
+ {p:"rutina",m:10,g:"na",t:"Colores sin elegir",d:"Coge tres colores sin mirar. Pinta lo de siempre, pero con esos.",e:"Tu perro, en verde, naranja y gris."},
+ {p:"rutina",m:10,g:"na",t:"Solo círculos",d:"Todo el dibujo hecho con círculos. Nada de rectas.",e:"Una bici, una cara y un árbol, solo con redondas."},
+ {p:"rutina",m:10,g:"n",t:"Como una hormiga",d:"Dibuja algo visto desde el suelo, como lo vería una hormiga.",e:"Una silla vista desde abajo: patas enormes, el asiento como un techo."},
  {p:"rutina",m:10,g:"ad",t:"Cambia de escala",d:"Si siempre usas A4, pasa a A3. O a algo diminuto.",e:"El retrato que ibas a hacer en A4, del tamaño de un sello."},
  {p:"rutina",m:10,g:"ad",t:"La restricción absurda",d:"Una regla rara para todo el dibujo.",e:"Solo líneas verticales. Nada de curvas."},
  {p:"rutina",m:10,g:"d",t:"Un color que no usarías",d:"Elige el color que nunca pones y haz que mande en el cuadro.",e:"Si nunca usas el rosa, hoy el fondo entero rosa.",w:"coolors"},
  {p:"rutina",m:10,g:"d",t:"Empieza por el otro lado",d:"Empieza por donde nunca empiezas.",e:"El fondo primero. La figura, al final."},
- {p:"rutina",m:30,g:"ad",t:"Material encontrado",d:"Trabaja sobre algo que no sea material de arte.",e:"Una página de periódico, dejando ver el texto."},
+ // ── Siempre hago lo mismo · toda la clase
+ {p:"rutina",m:30,g:"nad",t:"Material encontrado",d:"Trabaja sobre algo que no sea material de arte.",e:"Una página de periódico, dejando ver el texto."},
+ {p:"rutina",m:30,g:"n",t:"Collage y dibujo encima",d:"Recorta y pega trozos de revista. Luego dibuja encima hasta que sea otra cosa.",e:"Un trozo de foto de mar se convierte en el vestido de una reina."},
+ {p:"rutina",m:30,g:"n",t:"Herramienta rara",d:"Pinta con algo que no es un pincel.",e:"Un cepillo de dientes, una esponja o un tenedor."},
+ {p:"rutina",m:30,g:"na",t:"Blanco sobre negro",d:"Lápiz blanco sobre cartulina negra. Hoy dibujas la luz, no la línea.",e:"Una vela: solo la llama y lo que ilumina."},
+ {p:"rutina",m:30,g:"na",t:"Completa la imagen",d:"Pega media foto de revista y dibuja la mitad que falta.",e:"Media cara de un anuncio. La otra mitad, inventada."},
  {p:"rutina",m:30,g:"ad",t:"Rómpelo y recomponlo",d:"Rompe un boceto viejo en tiras y pégalas formando otra imagen.",e:"Un paisaje cortado en tiras verticales, recolocado como una ciudad."},
  {p:"rutina",m:30,g:"ad",t:"Un movimiento que no conoces",d:"Diez minutos mirando un movimiento que no dominas. El resto, un apunte a su manera.",e:"Si nunca miraste a Malévich, empieza por el suprematismo.",w:"wikiart",f:["abstracto"]},
+ {p:"rutina",m:30,g:"ad",t:"Cambia de sitio",d:"Trabaja de pie, en el suelo o en la terraza. Donde nunca trabajas.",e:"El papel en el suelo y tú de rodillas, con el brazo entero."},
  {p:"rutina",m:30,g:"d",t:"Cambia de formato a mitad",d:"Empieza en vertical. A mitad, gira la hoja y sigue en horizontal.",e:"El retrato se convierte en paisaje con la misma mancha."},
- // Demasiadas ideas
+ // ── Siempre hago lo mismo · proyecto
+ {p:"rutina",m:99,g:"nad",t:"Mismo tema, otra técnica",d:"Coge un trabajo tuyo ya acabado y repítelo con una técnica que no domines.",e:"Tu bodegón de grafito, ahora en tinta con palito.",f:["tinta"]},
+ {p:"rutina",m:99,g:"nad",t:"Como lo haría otro",d:"Elige un pintor de la biblioteca. Mira diez obras suyas y haz una tuya como la haría él.",e:"Tu calle pintada como la pintaría Van Gogh."},
+ {p:"rutina",m:99,g:"nad",t:"El mismo rincón",d:"Un mismo rincón del Estudio en varias clases, con la luz que haya cada día.",e:"La ventana del taller: un día con sol, otro nublado, otro con la lámpara."},
+ {p:"rutina",m:99,g:"n",t:"Más grande que tú",d:"Papel en el suelo, más grande que tú. Brochas en vez de pinceles.",e:"Un dragón que no cabe en la mesa."},
+ {p:"rutina",m:99,g:"n",t:"Del dibujo a la pintura",d:"Coge un dibujo tuyo antiguo y conviértelo en pintura.",e:"El castillo a lápiz del año pasado, ahora con témpera."},
+ {p:"rutina",m:99,g:"ad",t:"Copia a un maestro, un trozo",d:"Elige un cuadro y copia solo una zona: una mano, un trozo del fondo. Luego úsalo en lo tuyo.",e:"La mano de una Anunciación. Después, esa luz en tu retrato.",w:"prado",f:["historicas"]},
+ {p:"rutina",m:99,g:"ad",t:"Serie con tres colores",d:"Cinco obras con la misma paleta de tres colores. Ni uno más.",e:"Ocre, azul de Prusia y blanco para cinco rincones de Huesca.",w:"adobecolor"},
+ {p:"rutina",m:99,g:"ad",t:"Un formato que no usas",d:"Muy alargado, redondo o enorme. El formato cambia la composición.",e:"Un paisaje en una tira de 15 × 100 cm."},
+ // ── Demasiadas ideas · 10 minutos
  {p:"exceso",m:10,g:"ad",t:"La primera",d:"Si tienes tres ideas a la vez, elige la primera que pensaste y empieza ya.",e:"Las otras dos, apuntadas en una esquina. Mañana."},
  {p:"exceso",m:10,g:"ad",t:"Una miniatura por idea",d:"Cada idea en una miniatura de dos minutos, del tamaño de un sello. Sigue con la que más te tire.",e:"Cuatro recuadros de 5 × 7 cm en una hoja. Uno por idea."},
+ {p:"exceso",m:10,g:"ad",t:"Cara o cruz",d:"Dos ideas y una moneda. Lo que salga, no se discute.",e:"Cara, el retrato. Cruz, el paisaje. Ha salido cruz."},
+ {p:"exceso",m:10,g:"ad",t:"Escribe y tacha",d:"Apunta todas las ideas. Tacha las que no harías hoy con lo que hay en la sala.",e:"Óleo grande: tachada. Tinta en A4: se queda."},
+ {p:"exceso",m:10,g:"ad",t:"Junta dos",d:"Coge las dos ideas que más te gusten y mételas en el mismo dibujo.",e:"El retrato de tu abuela y el mar: tu abuela en la playa."},
+ // ── Demasiadas ideas · toda la clase
  {p:"exceso",m:30,g:"ad",t:"Cinco variaciones",d:"Coge una sola idea y haz cinco variaciones rápidas. Las demás esperan.",e:"El mismo árbol cinco veces, cambiando solo el punto de vista."},
-
- // Proyecto largo
- {p:"blanco",m:99,g:"n",t:"Un cuento sin palabras",d:"Cuenta una historia en cuatro viñetas, sin escribir nada.",e:"Un gato sube a un árbol, no sabe bajar, llega un pájaro, baja volando."},
- {p:"blanco",m:99,g:"n",t:"Un lugar que no existe",d:"Dibuja un sitio en el que te gustaría vivir. Una clase para el sitio, otra para lo que pasa en él.",e:"Una casa dentro de una ballena, con ventanas en las aletas.",f:["fantasia"]},
- {p:"blanco",m:99,g:"ad",t:"Una serie de tres",d:"Un mismo tema en tres obras, cada una con una técnica distinta.",e:"Tu calle a grafito, en acuarela y en collage.",f:["urbano"]},
- {p:"blanco",m:99,g:"a",t:"Tu proyecto, con reglas",d:"Tema tuyo. A3, técnica mixta. Una clase de bocetos antes de empezar.",e:"«Mi habitación de noche»: tres miniaturas el primer día y eliges una."},
- {p:"miedo",m:99,g:"ad",t:"Pruébalo aparte",d:"Antes de tocar el cuadro, prueba el cambio en otro papel o sobre una foto impresa.",e:"No sabes si oscurecer el fondo. Fotocópialo y píntalo ahí primero."},
- {p:"miedo",m:99,g:"ad",t:"Foto de cada fase",d:"Al acabar cada clase, una foto y una línea de lo que piensas. Si lo estropeas, sabes dónde estabas.",e:"Foto del lienzo a medias y «hoy dudé del fondo» escrito al lado."},
- {p:"miedo",m:99,g:"n",t:"Primero en pequeño",d:"Haz tu dibujo en pequeño antes de hacerlo en grande.",e:"Un boceto del tamaño de la mano. Luego el grande."},
- {p:"rutina",m:99,g:"nad",t:"Mismo tema, otra técnica",d:"Coge un trabajo tuyo que ya esté acabado y repítelo con una técnica que no domines.",e:"Tu bodegón de grafito, ahora en tinta con palito.",f:["tinta"]},
- {p:"rutina",m:99,g:"ad",t:"Copia a un maestro, un trozo",d:"Elige un cuadro y copia solo una zona: una mano, un trozo del fondo. Luego úsalo en lo tuyo.",e:"La mano de una Anunciación. Después, esa luz en tu retrato.",w:"prado",f:["historicas"]},
+ {p:"exceso",m:30,g:"ad",t:"Divide la hoja",d:"Hoja en cuatro. Una idea por recuadro, siete minutos cada una. Luego eliges.",e:"Cuatro bocetos. El tercero tiene algo. Sigues con ese."},
+ {p:"exceso",m:30,g:"ad",t:"Con los ojos entornados",d:"Haz las miniaturas y míralas con los ojos entornados. La que mejor se lee, esa.",e:"Desde dos metros, solo una tiene una mancha clara que manda."},
+ {p:"exceso",m:30,g:"ad",t:"La más difícil",d:"Elige la idea que te parece más difícil. Las fáciles saben esperar.",e:"La figura de espaldas a contraluz, no el bodegón de siempre."},
+ {p:"exceso",m:30,g:"ad",t:"Quita hasta que quede una",d:"Mete todas las ideas en un boceto. Luego quita cosas hasta que funcione.",e:"Empiezas con siete elementos y acabas con dos."},
+ // ── Demasiadas ideas · proyecto
  {p:"exceso",m:99,g:"ad",t:"¿Es una serie?",d:"Si tus ideas hablan de lo mismo, puede que sea una serie. Una idea por obra, en orden.",e:"Tres ideas sobre tu barrio: la calle, el portal, la ventana. Tres cuadros."},
- // No me sale: técnica
+ {p:"exceso",m:99,g:"ad",t:"Cuaderno de ideas",d:"Un cuaderno solo para apuntarlas. Hoy desarrollas una. Las demás esperan ahí.",e:"Una página por idea, con un boceto de un minuto."},
+ {p:"exceso",m:99,g:"ad",t:"Tres fases",d:"Bocetos, estudio de color y obra. No saltes de fase hasta acabar la anterior.",e:"Semana uno, seis miniaturas. Semana dos, la paleta. Semana tres, el cuadro."},
+ {p:"exceso",m:99,g:"ad",t:"Ponles fecha",d:"Dale un mes a cada idea. Escríbelo en la última página del cuaderno.",e:"Octubre, el retrato. Noviembre, la serie de ventanas."},
+ {p:"exceso",m:99,g:"ad",t:"La idea raíz",d:"Busca qué tienen en común todas tus ideas. Pinta eso.",e:"Todas hablan de casas vacías. El tema es el vacío."},
+ // ── No me sale · no se parece
  {p:"tec",s:"prop",g:"n",t:"Mira más de lo que dibujas",d:"Recorre despacio el borde de un objeto con la vista, y a la vez con el lápiz.",e:"Un zapato. Tardas cinco minutos solo en su borde.",f:["bodegones"],b:"Dibujo creativo"},
+ {p:"tec",s:"prop",g:"n",t:"Compara tamaños",d:"Antes de dibujar, pregúntate qué es más alto y qué es más ancho. Márcalo con rayitas.",e:"La botella es el doble de alta que la taza. Dos rayas, luego dibujas."},
+ {p:"tec",s:"prop",g:"n",t:"Lo que ves, no lo que sabes",d:"Dibuja la forma que ves, aunque no sea la que sabes que tiene.",e:"Un vaso visto de lado no es un círculo arriba. Es un óvalo."},
+ {p:"tec",s:"prop",g:"nad",t:"Primero las formas grandes",d:"Encaja primero las formas grandes: círculos, cajas, triángulos. Los detalles, al final.",e:"Un gato: un óvalo para el cuerpo, un círculo para la cabeza, dos triángulos."},
+ {p:"tec",s:"prop",g:"nad",t:"La ventana",d:"Mira el modelo a través de un plástico transparente y marca encima los puntos principales.",e:"Un acetato con un marco de cartulina. Lo que se ve dentro es tu encuadre."},
  {p:"tec",s:"prop",g:"a",t:"Solo contorno, sin mirar el papel",d:"Mira el modelo, no la hoja. El lápiz va al ritmo del ojo.",e:"Tu mano, cinco minutos, sin mirar la hoja ni una vez.",f:["ejgrafito"],b:"Lea este libro si quiere hacer buenos dibujos"},
- {p:"tec",s:"prop",g:"d",t:"Dibuja el espacio vacío",d:"Dibuja los huecos que hay alrededor y entre las cosas, no las cosas.",e:"Una silla: dibuja el aire entre sus patas y la silla aparece sola.",f:["bodegones","interiores"],b:"Lea este libro si quiere hacer buenos dibujos"},
- {p:"tec",s:"prop",g:"d",t:"Dale la vuelta",d:"Gira la referencia 180° y dibuja lo que ves así, cabeza abajo.",e:"Un retrato del fichero, del revés. Ya no ves una cara, ves formas.",f:["retratos"]},
+ {p:"tec",s:"prop",g:"ad",t:"Mide con el lápiz",d:"Brazo estirado, un ojo cerrado. El lápiz como regla para comparar alto, ancho y ángulos.",e:"La cabeza cabe siete veces y media en la figura. Compruébalo."},
+ {p:"tec",s:"prop",g:"ad",t:"Dibuja el espacio vacío",d:"Dibuja los huecos que hay alrededor y entre las cosas, no las cosas.",e:"Una silla: dibuja el aire entre sus patas y la silla aparece sola.",f:["bodegones","interiores"],b:"Lea este libro si quiere hacer buenos dibujos"},
+ {p:"tec",s:"prop",g:"ad",t:"Dale la vuelta",d:"Gira la referencia 180° y dibuja lo que ves así, cabeza abajo.",e:"Un retrato del fichero, del revés. Ya no ves una cara, ves formas.",f:["retratos"]},
+ {p:"tec",s:"prop",g:"d",t:"Cinco puntos primero",d:"Marca los cinco puntos más extremos del modelo antes de dibujar una sola línea.",e:"Cabeza, dos manos, dos pies. Si esos cinco están bien, el resto encaja."},
+ // ── No me sale · queda plano
  {p:"tec",s:"plano",g:"n",t:"Cinco grises",d:"Haz una escala de cinco grises bien distintos, del blanco al negro. Dibuja una fruta usando solo esos cinco.",e:"Una manzana: el más claro donde brilla, el más oscuro debajo.",f:["ejgrafito"],b:"Luz y sombra en el dibujo"},
+ {p:"tec",s:"plano",g:"n",t:"La sombra pegada",d:"Todo lo que está apoyado tiene una sombra pegada debajo. Dibújala más oscura.",e:"La pelota sobre la mesa: debajo, una mancha negra como un charco."},
+ {p:"tec",s:"plano",g:"n",t:"Aprieta y afloja",d:"Con ceras: aprieta para lo oscuro y afloja para lo claro.",e:"Una naranja que se ilumina por un lado y se apaga por el otro."},
+ {p:"tec",s:"plano",g:"na",t:"La linterna",d:"Ilumina un objeto con una linterna desde un lado. Dibuja dónde cae la sombra.",e:"Un huevo con la luz de lado: media luna clara, media luna oscura."},
+ {p:"tec",s:"plano",g:"na",t:"Papel negro",d:"Lápiz blanco sobre papel negro. Dibuja solo donde da la luz.",e:"Una taza: el borde brillante y la luz en la panza. Nada más."},
  {p:"tec",s:"plano",g:"a",t:"Solo masa y sombra",d:"Sin línea de contorno. Dibuja con manchas de sombra.",e:"Un bodegón con una luz de lado: primero la sombra más oscura, luego la media.",w:"posemyart",f:["ejgrafito"],b:"El claroscuro"},
+ {p:"tec",s:"plano",g:"ad",t:"Tres tonos y basta",d:"El blanco del papel, un gris medio y un negro. Nada más.",e:"Un paisaje con niebla, resuelto en tres manchas.",w:"unsplash"},
+ {p:"tec",s:"plano",g:"ad",t:"La goma también dibuja",d:"Mancha todo de gris con carboncillo y saca las luces con la goma.",e:"Una cara que sale de la sombra, como en Caravaggio.",f:["grafito"],b:"El claroscuro"},
+ {p:"tec",s:"plano",g:"ad",t:"Los grises de un maestro",d:"Copia un trozo de un cuadro solo en valores, sin color.",e:"La cara de un Rembrandt en cinco grises.",w:"gac",b:"Luz y sombra en el dibujo"},
  {p:"tec",s:"plano",g:"d",t:"Solo con la sombra",d:"Nada de línea. Mancha las sombras y deja que la luz sea el papel.",e:"Mira cómo pinta Vermeer la luz en La lechera antes de empezar.",w:"rijks",f:["grafito"],b:"El claroscuro"},
+ {p:"tec",s:"plano",g:"d",t:"Ojos entornados",d:"Entorna los ojos hasta que desaparezcan los detalles. Dibuja solo las masas de luz y sombra.",e:"Un rostro se queda en tres manchas: frente clara, ojos oscuros, mejilla media."},
+ // ── No me sale · está rígido
  {p:"tec",s:"rigido",g:"n",t:"Tres poses de dos minutos",d:"Un compañero posa. Dos minutos por pose. Cambia de pose aunque no hayas acabado.",e:"De pie, sentado y agachado a coger algo.",f:["figura"]},
+ {p:"tec",s:"rigido",g:"n",t:"Muñecos que bailan",d:"Diez muñecos de palitos, cada uno en una postura distinta.",e:"Uno salta, otro chuta, otro se cae de culo."},
+ {p:"tec",s:"rigido",g:"n",t:"La línea del movimiento",d:"Antes del muñeco, una sola curva que diga cómo se mueve.",e:"Una curva como un plátano: ahí va la espalda de alguien que corre."},
+ {p:"tec",s:"rigido",g:"nad",t:"Haz tú la pose",d:"Ponte tú en la postura antes de dibujarla. Nota dónde aprieta y dónde carga el peso.",e:"Te apoyas en una pierna: la cadera sube de ese lado."},
+ {p:"tec",s:"rigido",g:"nad",t:"Treinta segundos",d:"Poses de treinta segundos. No da tiempo a los detalles y no hacen falta.",e:"Veinte poses en diez minutos. Ninguna acabada."},
  {p:"tec",s:"rigido",g:"a",t:"Solo gesto, un minuto",d:"Poses de un minuto. Solo la línea que atraviesa el cuerpo. Ni caras ni manos.",e:"Una curva de la cabeza al pie que carga el peso. Luego lo demás.",w:"quickposes",f:["figura","escenas"],b:"Los cuadernos del dibujante · Figuras en movimiento"},
+ {p:"tec",s:"rigido",g:"ad",t:"Sin levantar el lápiz",d:"La figura entera en una sola línea continua. Dos minutos.",e:"Del pelo al pie y de vuelta a la mano, sin parar.",w:"quickposes",f:["figura"]},
+ {p:"tec",s:"rigido",g:"ad",t:"¿Dónde apoya?",d:"Antes que nada, marca el pie que carga el peso y la inclinación de hombros y caderas.",e:"Hombros hacia un lado, caderas hacia el otro. Ya se mueve.",f:["figura","escenas"],b:"Los cuadernos del dibujante · Figuras en movimiento"},
  {p:"tec",s:"rigido",g:"d",t:"Contorno ciego, sin corregir",d:"Poses de tres minutos sin mirar el papel. Lo que salga no se corrige.",e:"Diez poses seguidas. No importa cuál sale torcida.",w:"loa",f:["figura"],b:"Los cuadernos del dibujante · Figuras en movimiento"},
+ // ── No me sale · los colores
  {p:"tec",s:"color",g:"n",t:"Cálidos y fríos",d:"Pinta lo mismo dos veces. Una solo con colores cálidos y otra solo con fríos.",e:"El mismo árbol: uno rojo y naranja, otro azul y verde.",w:"coolors",b:"El secreto de los colores"},
+ {p:"tec",s:"color",g:"n",t:"Solo tres colores",d:"Rojo, amarillo y azul. Todos los demás, mezclándolos tú.",e:"El verde del árbol sale de mezclar azul y amarillo.",b:"El secreto de los colores"},
+ {p:"tec",s:"color",g:"n",t:"El color de verdad",d:"Antes de pintar, mira de qué color es de verdad. No de qué color debería ser.",e:"La sombra de la manzana roja no es negra. Es morada."},
+ {p:"tec",s:"color",g:"na",t:"Manchas grandes primero",d:"Pinta primero las manchas grandes. Los detalles, al final.",e:"Cielo, suelo y casa. Luego las ventanas."},
+ {p:"tec",s:"color",g:"na",t:"Un solo color",d:"Todo el cuadro con un solo color, más claro o más oscuro.",e:"Un paisaje entero en azul: azul con blanco, azul puro, azul con negro."},
  {p:"tec",s:"color",g:"a",t:"La sombra, del color contrario",d:"Pinta las sombras con el complementario, no con negro.",e:"Una naranja con la sombra azulada.",w:"adobecolor",b:"Guía práctica de la mezcla de colores"},
- {p:"tec",s:"color",g:"d",t:"Un gris sin negro",d:"Consigue un gris neutro mezclando solo complementarios. Después úsalo para calmar el resto.",e:"Rojo y verde hasta que ninguno gane.",w:"handprint",b:"Guía visual práctica para la mezcla de colores"}
+ {p:"tec",s:"color",g:"ad",t:"Paleta de cinco",d:"Saca cinco colores de un cuadro que te guste. Pinta lo tuyo solo con esos.",e:"La paleta de un Sorolla para tu bodegón.",w:"adobecolor"},
+ {p:"tec",s:"color",g:"ad",t:"Luz cálida, sombra fría",d:"Las luces, hacia el amarillo. Las sombras, hacia el azul.",e:"Una cara al sol: mejilla dorada, cuello violeta."},
+ {p:"tec",s:"color",g:"ad",t:"Bájalo de tono",d:"Si los colores chillan, rebaja cada uno con un poco de su complementario.",e:"Un verde demasiado fuerte se calma con una punta de rojo.",w:"handprint",b:"Guía práctica de la mezcla de colores"},
+ {p:"tec",s:"color",g:"d",t:"Un gris sin negro",d:"Consigue un gris neutro mezclando solo complementarios. Después úsalo para calmar el resto.",e:"Rojo y verde hasta que ninguno gane.",w:"handprint",b:"Guía visual práctica para la mezcla de colores"},
+ {p:"tec",s:"color",g:"d",t:"El color depende del vecino",d:"Pinta el mismo gris sobre un fondo amarillo y sobre uno azul. Compara.",e:"El mismo gris parece violeta en el amarillo y anaranjado en el azul."}
 ];
 const COMBO={
  n:{c:["Casa","Árbol","Una persona o un animal","Cielo","Montaña","Mar"],t:["Dentro de una casa","De noche","Muy de cerca","Visto desde arriba, como un pájaro","Algo roto o torcido","Con colores complementarios"]},
@@ -778,7 +861,13 @@ const COMBO={
 const COMBO_F={"Casa":["urbano"],"Árbol":["naturaleza","paisajes"],"Una persona o un animal":["figura","terrestres"],"Cielo":["paisajes"],"Montaña":["paisajes"],"Mar":["marinos","paisajes"],
  "Objeto cotidiano":["bodegones"],"Animal":["terrestres","aereos"],"Persona":["figura","retratos"],"Edificio o ciudad":["urbano"],"Elemento natural":["naturaleza","flores"],"Cielo o luz":["paisajes"],
  "Un recuerdo":["modelos"],"Algo con historia":["historicas","bodegones"],"Alguien importante":["retratos"],"Un lugar al que no puedes volver":["paisajes","urbano"],"Algo que te da un poco de miedo":["fantasia"],"Un contraste, dos cosas opuestas":["abstracto"]};
-const REFL={blanco:"¿Qué quiero expresar de verdad, más allá de la técnica?",miedo:"Si no tuviera miedo de que quedara mal, ¿qué haría ahora mismo?",rutina:"¿Qué solución estoy evitando porque me da miedo usarla?",exceso:"¿Qué quiero expresar de verdad? Quédate con la idea que lo dice mejor.",tec:"¿No lo ves o no te sale? Si no lo ves, mira más tiempo. Si no te sale, repítelo más veces."};
+const REFL={
+ blanco:["¿Qué quiero expresar de verdad, más allá de la técnica?","¿Qué he visto esta semana que se me haya quedado en la cabeza?","¿Qué pintaría si nadie lo fuera a ver?","¿Qué cuadro me habría gustado pintar a mí?","¿Qué me gustaría saber hacer que hoy todavía no sé?"],
+ miedo:["Si no tuviera miedo de que quedara mal, ¿qué haría ahora mismo?","¿Qué es lo peor que le puede pasar a este papel?","¿Estoy dibujando para aprender o para que quede bien?","¿De quién es la mirada que me da miedo?","¿Cuántos dibujos malos hacen falta para que salga uno bueno?"],
+ rutina:["¿Qué solución estoy evitando porque me da miedo usarla?","¿Cuándo fue la última vez que algo mío me sorprendió?","¿Qué hago siempre igual sin haberlo decidido nunca?","¿Qué material no he tocado este año?","¿A qué pintor no me parecería nunca? ¿Por qué no?"],
+ exceso:["¿Cuál de mis ideas podría esperar un mes sin perder nada?","¿Qué idea quiero yo, y cuál creo que debería querer?","¿Qué tienen en común todas mis ideas?","¿Cuál puedo empezar hoy con lo que hay en la sala?","¿Qué quiero expresar? Quédate con la idea que lo dice mejor."],
+ tec:["¿No lo ves o no te sale? Si no lo ves, mira más tiempo. Si no te sale, repítelo más veces.","¿He mirado el modelo más tiempo que el papel?","¿Estoy dibujando lo que veo o lo que sé que hay?","¿Me falla siempre lo mismo? Eso es justo lo que hay que practicar.","¿Me he alejado del dibujo para mirarlo de lejos?"]
+};
 
 const av=$('#v-atasco');
 const rnd=a=>a[Math.floor(Math.random()*a.length)];
@@ -838,7 +927,7 @@ function result(){
   if(book) lr.append(chip(book,()=>goBook(book)));
   if(lr.children.length) sala.append(lr);
   r.append(sala);
-  if(A.age!=='n'){ const q=document.createElement('div'); q.className='refl'; q.innerHTML='<div class="k">Párate a mirar</div>'; const qp=document.createElement('p'); qp.textContent=REFL[A.prob]; q.append(qp); r.append(q); }
+  if(A.age!=='n'){ const q=document.createElement('div'); q.className='refl'; q.innerHTML='<div class="k">Párate a mirar</div>'; const qp=document.createElement('p'); qp.textContent=rnd(REFL[A.prob]); q.append(qp); r.append(q); }
   const act=document.createElement('div'); act.className='actions';
   const again=document.createElement('button'); again.className='go'; again.textContent= c==='combo' ? 'Otras dos cartas' : 'Otra idea'; again.addEventListener('click',()=>{A.i++; result(); window.scrollTo({top:0,behavior:'smooth'});});
   if(c==='combo' || A.pool.length>1) act.append(again);
