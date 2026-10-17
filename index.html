@@ -222,6 +222,23 @@ dd{margin:0}
 }
 
 .pinbox{margin-top:14px;overflow:hidden;max-width:100%}
+
+/* Buscador único */
+.gsearch{position:relative;max-width:560px}
+.gsearch input{width:100%;font:15px var(--sans);color:var(--ink);background:var(--panel);border:1px solid var(--line);padding:11px 14px}
+.gsearch input:focus{outline:none;border-color:var(--paper)}
+.gres{margin-top:8px;border:1px solid var(--line);background:var(--bg);max-height:70vh;overflow:auto}
+.gres h4{margin:0;padding:10px 14px 4px;font:10.5px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.gres button{display:block;width:100%;text-align:left;padding:9px 14px;font-size:14px;color:var(--ink);border-top:1px solid var(--line)}
+.gres button:hover,.gres button:focus-visible{background:rgba(217,199,163,.08)}
+.gres button small{display:block;color:var(--muted);font-size:12px;margin-top:1px}
+.gres .none{padding:12px 14px;color:var(--muted);font-size:14px}
+@media (max-width:720px){.gsearch input{font-size:17px;padding:14px}.gres button{font-size:17px;padding:13px 14px}.gres button small{font-size:14px}.gres h4{font-size:12px}}
+#f-mios .chip{color:var(--ink);border-color:var(--line);text-align:left}
+#f-mios .chip:hover{background:rgba(217,199,163,.12);color:var(--ink)}
+#f-mios p{color:var(--muted);margin:0}
+.bsave{display:block;font-size:12px;margin-top:2px}
+@media (max-width:720px){.bsave{font-size:14px;padding:6px 0}}
 </style>
 
 <header>
@@ -232,6 +249,7 @@ dd{margin:0}
     <button class="door" id="d-biblio" aria-pressed="false">Biblioteca</button>
     <button class="door" id="d-atasco" aria-pressed="false">¿Y si no sale?</button>
   </nav>
+  <div class="gsearch" role="search"><input id="gq" type="search" placeholder="Buscar en todo: retrato, acuarela, Doré, miedo…" autocomplete="off" aria-label="Buscar en webs, ficheros, libros y tarjetas"><div class="gres" id="gres" hidden></div></div>
   <h1 id="h1">¿Qué quieres trabajar hoy?</h1>
   <div class="fbar" id="fbar">
     <button class="ftoggle" id="ftoggle" aria-expanded="false" aria-controls="filters">Filtrar <span id="fsum"></span> <span class="chev" aria-hidden="true">▾</span></button>
@@ -305,6 +323,8 @@ dd{margin:0}
     <div class="info">
       <div class="k" id="f-eje"></div>
       <div class="sala"><div class="k">En la sala</div><p id="f-sala"></p><p class="modelos" id="f-note" hidden></p></div>
+      <div class="block" id="f-mios" hidden><div class="k">Guardado en este móvil</div><div class="linkrow" id="f-mios-list"></div></div>
+      <div id="f-savewrap"></div>
       <div class="block" id="f-bookswrap"><div class="k">En la biblioteca</div><ul class="books" id="f-books"></ul></div>
       <div class="block" id="f-embed" hidden></div>
       <div class="block" id="f-linkswrap"><div class="k">En internet</div><ul class="links" id="f-links"></ul></div>
@@ -383,7 +403,7 @@ const DR = {
  ejgrafito:{n:"Ejercicio grafito",e:"verde",books:[B("Lea este libro si quiere hacer buenos dibujos","Selwyn Leamy","Dibujo"),B("Dibujo a lápiz","José M. Parramón","Dibujo")],links:[["met","Busca «Ingres». Copia una cabeza en 30 minutos."]]},
  ejgrafitopaisaje:{n:"Ejercicio grafito paisaje",e:"verde",books:[B("Dibujo de paisaje","Parramón","Dibujo")],links:[["met","Busca «landscape drawing»."]]},
  ejercicios:{n:"Ejercicios",e:"verde",books:[B("Curso completo de dibujo","Ian Simpson","Técnicas de arte"),B("El taller de bolsillo","Michel Lauricella y Magali Cazo","Estante azul")],links:[["posemaniacs","Poses de 30 segundos para calentar."]]},
- modelos:{n:"Modelos",e:"blanco",books:[],links:[],note:"Lo que estamos pintando ahora. Este fichero solo existe en la sala: ven a verlo."},
+ modelos:{n:"Modelos",e:"blanco",books:[],links:[],note:"Lo que estamos pintando ahora está en el archivador de la sala. Aquí abajo tienes lo que has guardado tú en este móvil."},
  pinonline:{n:"Pinterest online",e:"blanco",online:true,books:[],links:[],note:"Si encuentras aquí una que te gusta, búscala impresa en el archivador Pinterest: azul si es fácil, rojo si es difícil.",embed:"https://es.pinterest.com/javiersanagusti/escuela/"},
  pinterest:{n:"Pinterest",e:"blanco",books:[],links:[["pinboard","El tablero de la escuela, online."],["savee","Inspiración que eligen diseñadores."],["cosmos","Como Pinterest, pero intenta decirte de quién es cada imagen."],["same","Sube una imagen y busca otras parecidas."]]}
 };
@@ -589,6 +609,11 @@ wikiart:"Museos europeos, en español",artvee:"Obras antiguas en alta calidad",h
 arena:"Tableros de artistas",cosmos:"Imágenes con su autor",cad:"Exposiciones de galerías, hoy",juxtapoz:"Arte urbano e ilustración",itsnice:"Revista de ilustración actual",obi:"Grabados antiguos de libros",fontsinuse:"La letra en carteles y libros",readymag:"Webs y portfolios de diseñadores",unsplash:"Fotos libres para referencia"};
 const state = {topic:null, level:null, minor:store.get('sg-menor',false)};
 let saved = new Set(store.get('sg-guardados',[]));
+/* Guardado en este móvil: tarjetas, libros y ficheros (las webs siguen en «saved») */
+let mios = store.get('sg-mios',[]);
+const esMio=(k,id)=>mios.some(x=>x.k===k&&x.id===id);
+function toggleMio(k,id,t,sub){ if(esMio(k,id)) mios=mios.filter(x=>!(x.k===k&&x.id===id)); else mios.unshift({k,id,t,sub:sub||''}); store.set('sg-mios',mios); }
+function saveBtn(k,id,t,sub){ const b=document.createElement('button'); b.className='save'; const paint=()=>{ const on=esMio(k,id); b.setAttribute('aria-pressed',String(on)); b.textContent=on?'Guardado en Modelos':'Guardar en Modelos'; }; b.addEventListener('click',e=>{ e.stopPropagation(); toggleMio(k,id,t,sub); paint(); }); paint(); return b; }
 const $ = s => document.querySelector(s);
 
 function buildRow(el, map, key){
@@ -655,7 +680,7 @@ function openCard(r){
   const tabs=$('#c-tabs'); tabs.replaceChildren();
   $('#c-howwrap').hidden=!HOW[r.id]; $('#c-how').textContent=HOW[r.id]||'';
   const save=$('#c-save');
-  const paint=()=>{ const on=saved.has(r.id); save.setAttribute('aria-pressed',String(on)); save.textContent=on?'Guardada':'Guardar'; };
+  const paint=()=>{ const on=saved.has(r.id); save.setAttribute('aria-pressed',String(on)); save.textContent=on?'Guardada en Modelos':'Guardar en Modelos'; };
   save.onclick=()=>{ saved.has(r.id)?saved.delete(r.id):saved.add(r.id); store.set('sg-guardados',[...saved]); paint(); render(); };
   paint();
   const lr=$('#c-links'); lr.replaceChildren();
@@ -703,6 +728,19 @@ function openDrawer(id){
   $('#f-sala').textContent = (n>1? n+' archivadores ':'Archivador ')+EJES[eje].c.toLowerCase()+' «'+d.n+'». '+(lv.length? 'Niveles: '+lv.map(i=>LVL[i]).join(' · ')+'.' : 'Sin niveles.');
   if(d.online) $('#f-sala').textContent='Este archivador no está en la sala: es el tablero de la escuela en Pinterest, con las imágenes de los archivadores Pinterest y las nuevas.';
   $('#f-note').hidden=!d.note; $('#f-note').textContent=d.note||'';
+  const sw=$('#f-savewrap'); sw.replaceChildren(); if(id!=='modelos') sw.append(saveBtn('fichero',id,'Fichero '+d.n,EJES[eje].c+' · '+EJES[eje].n));
+  const fm=$('#f-mios'), fl=$('#f-mios-list'); fl.replaceChildren(); fm.hidden=id!=='modelos';
+  if(id==='modelos'){
+    const items=[...R.filter(r=>saved.has(r.id)).map(r=>({k:'web',id:r.id,t:r.name,sub:SHORT[r.id]||''})), ...mios];
+    if(!items.length){ const p=document.createElement('p'); p.textContent='Todavía no has guardado nada. Pulsa «Guardar en Modelos» en una web, un fichero, un libro o una tarjeta y aparecerá aquí.'; fl.append(p); }
+    for(const x of items){ const c=document.createElement('button'); c.className='chip'; c.textContent=x.t; c.title=x.sub; c.addEventListener('click',()=>{ $('#fcard').close();
+      if(x.k==='web'){ const r=R.find(r=>r.id===x.id); r&&openCard(r); }
+      else if(x.k==='fichero'){ setDoor('f'); openDrawer(x.id); }
+      else if(x.k==='libro'){ goBook(x.id); }
+      else if(x.k==='tarjeta'){ const c2=CARDS.find(c=>c.t===x.id); if(c2){ A.age=A.age||(c2.g.includes('d')?'d':c2.g[0]); A.prob=c2.p; A.time=c2.m||30; A.tec=c2.s; A.pool=[c2]; A.i=0; setDoor('a'); result(); } }
+      else if(x.k==='combo'){ setDoor('a'); const r=document.createElement('div'); av.replaceChildren(); const h=document.createElement('p'); h.className='qtext'; h.textContent=x.t; av.append(h); const s=document.createElement('p'); s.className='do'; s.textContent=x.sub; av.append(s); }
+    }); fl.append(c); }
+  }
   const bl=$('#f-books'); bl.replaceChildren();
   for(const k of d.books){ const li=document.createElement('li'); const b=document.createElement('button'); b.className='bk'; b.textContent=k.t; b.addEventListener('click',()=>goBook(k.t)); const sm=document.createElement('small'); sm.textContent=(k.a?k.a+' · ':'')+'balda '+k.s; li.append(b,sm); bl.append(li); }
   $('#f-bookswrap').hidden=!d.books.length;
@@ -965,6 +1003,8 @@ function result(){
   r.append(sala);
   if(A.age!=='n'){ const q=document.createElement('div'); q.className='refl'; q.innerHTML='<div class="k">Párate a mirar</div>'; const qp=document.createElement('p'); qp.textContent=rnd(REFL[A.prob]); q.append(qp); r.append(q); }
   const act=document.createElement('div'); act.className='actions';
+  if(c==='combo'){ const sp2=top.querySelectorAll('.combo span'); const tt=[...sp2].map(s=>s.lastChild.textContent).join(' · '); act.append(saveBtn('combo',tt,tt,'Cartas para empezar: haz esto, con esta condición.')); }
+  else act.append(saveBtn('tarjeta',c.t,c.t,c.d));
   const again=document.createElement('button'); again.className='go'; again.textContent= c==='combo' ? 'Otras dos cartas' : 'Otra idea'; again.addEventListener('click',()=>{A.i++; result(); window.scrollTo({top:0,behavior:'smooth'});});
   if(c==='combo' || A.pool.length>1) act.append(again);
   const re=document.createElement('button'); re.className='save'; re.textContent='Empezar otra vez'; re.addEventListener('click',askAge); act.append(re);
@@ -996,12 +1036,44 @@ function renderBooks(){
     const g=document.createElement('section'); g.className='bgroup';
     g.innerHTML=`<h3>Balda ${s}<small>${items.length} ${items.length===1?'libro':'libros'}</small></h3>`;
     const ul=document.createElement('ul');
-    for(const k of items){ const li=document.createElement('li'); li.textContent=k.t; if(q && norm(k.t)===q) li.className='hit'; const sm=document.createElement('small'); sm.textContent=[k.a,k.e].filter(Boolean).join(' · '); if(sm.textContent) li.append(sm); ul.append(li); }
+    for(const k of items){ const li=document.createElement('li'); li.textContent=k.t; { const sb=saveBtn('libro',k.t,k.t,'balda '+k.s); sb.classList.add('bsave'); li.append(sb); } if(q && norm(k.t)===q) li.className='hit'; const sm=document.createElement('small'); sm.textContent=[k.a,k.e].filter(Boolean).join(' · '); if(sm.textContent) li.append(sm); ul.append(li); }
     g.append(ul); list.append(g);
   }
   $('#bcount').textContent = n ? n+' libros' : 'Ningún libro con esa búsqueda. Pregunta en clase: la biblioteca tiene más de lo que hay aquí.';
 }
 $('#q').addEventListener('input',renderBooks);
+/* Buscador único: webs, ficheros, libros y tarjetas */
+(function(){
+  const inp=$('#gq'), box=$('#gres');
+  const stems=q=>[q, q.length>4&&q.endsWith('s')?q.slice(0,-1):q, q.length>5&&q.endsWith('es')?q.slice(0,-2):q];
+  const hit=(txt,qs)=>{ const s=norm(txt); return qs.every(w=>stems(w).some(x=>s.includes(x))); };
+  function run(){
+    const q=norm(inp.value.trim()); box.replaceChildren();
+    if(q.length<2){ box.hidden=true; return; }
+    const qs=q.split(/\s+/).filter(Boolean); const minor=state.minor;
+    const groups=[];
+    const webs=R.filter(r=>!(minor&&ADULT.has(r.id)) && hit([r.name,r.purpose,SHORT[r.id]||'',r.topics.map(x=>TOPICS[x]).join(' '),Object.values(r.tasks).join(' ')].join(' '),qs));
+    groups.push(['Webs',webs.slice(0,8).map(r=>[r.name,SHORT[r.id]||'',()=>openCard(r)])]);
+    const fich=Object.entries(DR).filter(([id,d])=>hit([d.n,EJES[d.e].n,(d.links||[]).map(l=>l[1]).join(' '),(d.books||[]).map(b=>b.t).join(' ')].join(' '),qs));
+    groups.push(['Ficheros',fich.slice(0,8).map(([id,d])=>['Fichero '+d.n, EJES[d.e].c+' · '+EJES[d.e].n,()=>{setDoor('f');openDrawer(id);}])]);
+    const libs=LIBROS.filter(k=>hit([k.t,k.a,k.e,k.g||''].join(' '),qs));
+    groups.push(['Libros',libs.slice(0,8).map(k=>[k.t,[k.a,'balda '+k.s].filter(Boolean).join(' · '),()=>goBook(k.t)])]);
+    const plab=c=>{ const a=(PROBS.d.find(x=>x[0]===c.p)||PROBS.n.find(x=>x[0]===c.p)||[]); const s=(TEC.find(x=>x[0]===c.s)||[]); return [a[1],a[2],DECK[c.p],s[1],s[2],c.p==='miedo'?'miedo error estropear':'',c.p==='blanco'?'hoja en blanco no se que hacer':'',c.p==='exceso'?'ideas':'',c.p==='rutina'?'aburrido rutina siempre lo mismo':''].filter(Boolean).join(' '); };
+    const cards=CARDS.filter(c=>hit([c.t,c.d,c.e,plab(c)].join(' '),qs));
+    groups.push(['Tarjetas «¿Y si no sale?»',cards.slice(0,6).map(c=>[c.t,c.d,()=>{ A.age=A.age||(c.g.includes('d')?'d':c.g[0]); A.prob=c.p; A.time=c.m||30; A.tec=c.s; A.pool=[c]; A.i=0; setDoor('a'); result(); }])]);
+    let n=0;
+    for(const [title,items] of groups){ if(!items.length) continue; n+=items.length;
+      const h=document.createElement('h4'); h.textContent=title; box.append(h);
+      for(const [a,b,fn] of items){ const bt=document.createElement('button'); bt.textContent=a; if(b){ const s=document.createElement('small'); s.textContent=b; bt.append(s);} bt.addEventListener('click',()=>{ box.hidden=true; inp.value=''; fn(); }); box.append(bt); } }
+    if(!n){ const p=document.createElement('p'); p.className='none'; p.textContent='Nada con esa palabra. Prueba otra, o pregunta en clase.'; box.append(p); }
+    box.hidden=false;
+  }
+  inp.addEventListener('input',run);
+  inp.addEventListener('keydown',e=>{ if(e.key==='Escape'){ inp.value=''; run(); } });
+  document.addEventListener('click',e=>{ if(!e.target.closest('.gsearch')) box.hidden=true; });
+  inp.addEventListener('focus',()=>{ if(inp.value.trim().length>=2) run(); });
+})();
+
 renderBooks();
 if(location.hash==='#ficheros') setDoor('f');
 if(location.hash==='#biblioteca') setDoor('b');
