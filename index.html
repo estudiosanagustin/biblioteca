@@ -45,6 +45,8 @@ h1{font:italic 300 clamp(30px,5.4vw,68px)/1.02 var(--serif);letter-spacing:-.01e
 .row-spines{display:flex;flex-wrap:wrap;gap:4px;align-items:flex-end;padding-bottom:8px;border-bottom:6px solid #5b4a3c}
 .spine{width:56px;height:230px;display:flex;flex-direction:column;background:linear-gradient(90deg,#4a2618,#6b3a26 45%,#4a2618);box-shadow:inset -3px 0 0 rgba(0,0,0,.25);transition:transform .25s}
 .spine:hover,.spine:focus-visible{transform:translateY(-8px)}
+.spine .lvdots{display:flex;flex-direction:column;align-items:center;gap:5px;padding-top:10px}
+.spine .lvdots i{width:11px;height:11px;border-radius:50%;box-shadow:0 0 0 1.5px rgba(255,255,255,.55)}
 .spine .band{margin-top:auto;height:74%;display:flex;align-items:center;justify-content:center;padding:6px 0}
 .spine .band span{writing-mode:vertical-rl;transform:rotate(180deg);font:600 21px/1 "Caveat",cursive;letter-spacing:.02em;white-space:nowrap;max-height:100%;overflow:hidden}
 @media (max-width:620px){.spine{width:42px;height:200px}}
@@ -299,7 +301,7 @@ dd{margin:0}
       <p class="fi-s">¿No sabes qué archivador? Escribe arriba, en el buscador: «caballo», «tinta», «Monet».</p>
     </div>
     <div id="shelves"></div>
-    <p class="legend"><span class="dot azul"></span>Rótulo azul, fácil <span class="dot verde"></span>verde, medio <span class="dot rojo"></span>rojo, difícil <span class="dot negro"></span>negro, sin nivel</p>
+    <p class="legend">Puntos en el lomo: <span class="dot azul"></span>azul, fácil <span class="dot verde"></span>verde, medio <span class="dot rojo"></span>rojo, difícil. Sin puntos, sin nivel. En la sala cada nivel es un archivador; aquí van juntos.</p>
   </div>
 </main>
 
@@ -761,9 +763,13 @@ for(const [eje,list] of Object.entries(SHELF)){
   const sec=document.createElement('section'); sec.className='shelf';
   sec.innerHTML=`<div class="head"><span class="swatch" style="background:${SPINE_BG[eje]}"></span>${EJES[eje].c} · ${EJES[eje].n}</div>`;
   const row=document.createElement('div'); row.className='row-spines';
-  for(const [id,ink] of list){
-    const d=DR[id]; const b=document.createElement('button'); b.className='spine'; b.setAttribute('aria-label',d.n);
-    b.innerHTML=`<div class="band" style="background:${SPINE_BG[eje]}"><span style="color:${INK[ink]};font-size:${fs(d.n.replace(' · esgrafiado',''))}px">${d.n.replace(' · esgrafiado','')}</span></div>`;
+  /* en la sala hay un archivador por nivel; aquí, uno solo con sus niveles marcados */
+  for(const id of [...new Set(list.map(x=>x[0]))]){
+    const inks=[...new Set(list.filter(x=>x[0]===id).map(x=>x[1]))], lv=['azul','verde','rojo'].filter(i=>inks.includes(i));
+    const ink=inks.length===1?inks[0]:'negro';
+    const d=DR[id]; const b=document.createElement('button'); b.className='spine'; b.setAttribute('aria-label',d.n+(lv.length?', niveles: '+lv.map(i=>LVL[i]).join(', '):''));
+    const dots=lv.length?`<div class="lvdots">${lv.map(i=>`<i style="background:${INK[i]}"></i>`).join('')}</div>`:'';
+    b.innerHTML=`${dots}<div class="band" style="background:${SPINE_BG[eje]}"><span style="color:${INK[ink]};font-size:${fs(d.n.replace(' · esgrafiado',''))}px">${d.n.replace(' · esgrafiado','')}</span></div>`;
     b.addEventListener('click',()=>openDrawer(id)); row.append(b);
   }
   sec.append(row); shelves.append(sec);
@@ -787,8 +793,8 @@ function openDrawer(id){
   const n=SHELF[eje].filter(x=>x[0]===id).length;
   const sp=$('#f-spine span'); sp.textContent=d.n; sp.style.background=SPINE_BG[eje]; sp.style.color=INK[inks[0]];
   $('#f-eje').textContent=EJES[eje].c+' · '+EJES[eje].n;
-  const lv=inks.filter(i=>LVL[i]);
-  $('#f-sala').textContent = (n>1? n+' archivadores ':'Archivador ')+EJES[eje].c.toLowerCase()+' «'+d.n+'». '+(lv.length? 'Niveles: '+lv.map(i=>LVL[i]).join(' · ')+'.' : 'Sin niveles.');
+  const lv=['azul','verde','rojo'].filter(i=>inks.includes(i));
+  $('#f-sala').textContent = (n>1? 'En la sala son '+n+' archivadores '+({rosa:'rosas',amarillo:'amarillos',azul:'azules',verde:'verdes',blanco:'blancos'})[eje]+' «'+d.n+'», uno por nivel: '+lv.map(i=>LVL[i]).join(' · ')+'. Aquí están juntos.' : 'Archivador '+EJES[eje].c.toLowerCase()+' «'+d.n+'». '+(lv.length? 'Nivel: '+lv.map(i=>LVL[i]).join(' · ')+'.' : 'Sin niveles.'));
   if(d.online) $('#f-sala').textContent='Este archivador no está en la sala: es el tablero de la escuela en Pinterest, con las imágenes de los archivadores Pinterest y las nuevas.';
   $('#f-note').hidden=!d.note; $('#f-note').textContent=d.note||'';
   const sw=$('#f-savewrap'); sw.replaceChildren(); if(id!=='modelos') sw.append(saveBtn('fichero',id,'Fichero '+d.n,EJES[eje].c+' · '+EJES[eje].n));
