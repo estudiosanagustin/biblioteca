@@ -758,12 +758,19 @@ const SPINE_BG = {rosa:"#f1c8dc", amarillo:"#f4eec6", azul:"#cfe2f1", verde:"#bf
 const INK = {azul:"#2f7fc8", verde:"#2e8f49", rojo:"#d83a30", negro:"#1c1a17"};
 const LVL = {azul:"azul, fácil", verde:"verde, medio", rojo:"rojo, difícil"};
 const fs=s=>s.length>20?13:s.length>15?15:s.length>11?18:21;
+/* En la sala, la versión para esgrafiar es otro archivador. Aquí van juntos en una ficha. */
+const MERGE={halloweenes:'halloween',navidadeses:'navidad'};
+for(const [c,p] of Object.entries(MERGE)){ const a=DR[p], b=DR[c]; a.twin=b.n;
+  for(const bk of b.books) if(!a.books.some(x=>x.t===bk.t)) a.books.push(bk);
+  const term=l=>(l[1].match(/«([^»]+)»/)||[])[1];
+  for(const l of b.links) if(!a.links.some(x=>x[0]===l[0]&&term(x)===term(l))) a.links.push(l); }
 const shelves=$('#shelves');
-for(const [eje,list] of Object.entries(SHELF)){
+for(let [eje,list] of Object.entries(SHELF)){
   const sec=document.createElement('section'); sec.className='shelf';
   sec.innerHTML=`<div class="head"><span class="swatch" style="background:${SPINE_BG[eje]}"></span>${EJES[eje].c} · ${EJES[eje].n}</div>`;
   const row=document.createElement('div'); row.className='row-spines';
   /* en la sala hay un archivador por nivel; aquí, uno solo con sus niveles marcados */
+  list=list.map(x=>[MERGE[x[0]]||x[0],x[1]]);
   for(const id of [...new Set(list.map(x=>x[0]))]){
     const inks=[...new Set(list.filter(x=>x[0]===id).map(x=>x[1]))], lv=['azul','verde','rojo'].filter(i=>inks.includes(i));
     const ink=inks.length===1?inks[0]:'negro';
@@ -788,13 +795,14 @@ function deepLink(src,line){
   return {url:src.q.replace('{q-}',enc).replace('{q}',enc), term:t, text:text||'La búsqueda ya está hecha: mira los resultados.'};
 }
 function openDrawer(id){
-  const d=DR[id], eje=d.e;
+  id=MERGE[id]||id; const d=DR[id], eje=d.e;
   const inks=[...new Set(SHELF[eje].filter(x=>x[0]===id).map(x=>x[1]))];
   const n=SHELF[eje].filter(x=>x[0]===id).length;
   const sp=$('#f-spine span'); sp.textContent=d.n; sp.style.background=SPINE_BG[eje]; sp.style.color=INK[inks[0]];
   $('#f-eje').textContent=EJES[eje].c+' · '+EJES[eje].n;
   const lv=['azul','verde','rojo'].filter(i=>inks.includes(i));
   $('#f-sala').textContent = (n>1? 'En la sala son '+n+' archivadores '+({rosa:'rosas',amarillo:'amarillos',azul:'azules',verde:'verdes',blanco:'blancos'})[eje]+' «'+d.n+'», uno por nivel: '+lv.map(i=>LVL[i]).join(' · ')+'. Aquí están juntos.' : 'Archivador '+EJES[eje].c.toLowerCase()+' «'+d.n+'». '+(lv.length? 'Nivel: '+lv.map(i=>LVL[i]).join(' · ')+'.' : 'Sin niveles.'));
+  if(d.twin) $('#f-sala').textContent='En la sala son dos archivadores amarillos: «'+d.n+'» y «'+d.twin+'», con modelos para esgrafiar. Aquí están juntos.';
   if(d.online) $('#f-sala').textContent='Este archivador no está en la sala: es el tablero de la escuela en Pinterest, con las imágenes de los archivadores Pinterest y las nuevas.';
   $('#f-note').hidden=!d.note; $('#f-note').textContent=d.note||'';
   const sw=$('#f-savewrap'); sw.replaceChildren(); if(id!=='modelos') sw.append(saveBtn('fichero',id,'Fichero '+d.n,EJES[eje].c+' · '+EJES[eje].n));
@@ -1147,7 +1155,7 @@ $('#q').addEventListener('input',renderBooks);
     const groups=[];
     const webs=R.filter(r=>!(minor&&ADULT.has(r.id)) && hit([r.name,r.purpose,SHORT[r.id]||'',r.topics.map(x=>TOPICS[x]).join(' '),Object.values(r.tasks).join(' ')].join(' '),qs));
     groups.push(['Webs',webs.slice(0,8).map(r=>[r.name,SHORT[r.id]||'',()=>openCard(r)])]);
-    const fich=Object.entries(DR).filter(([id,d])=>hit([d.n,EJES[d.e].n,(d.links||[]).map(l=>l[1]).join(' '),(d.books||[]).map(b=>b.t).join(' ')].join(' '),qs));
+    const fich=Object.entries(DR).filter(([id,d])=>!MERGE[id]&&hit([d.n,EJES[d.e].n,(d.links||[]).map(l=>l[1]).join(' '),(d.books||[]).map(b=>b.t).join(' ')].join(' '),qs));
     groups.push(['Ficheros',fich.slice(0,8).map(([id,d])=>['Fichero '+d.n, EJES[d.e].c+' · '+EJES[d.e].n,()=>{setDoor('f');openDrawer(id);}])]);
     const libs=LIBROS.filter(k=>hit([k.t,k.a,k.e,k.g||''].join(' '),qs));
     groups.push(['Libros',libs.slice(0,8).map(k=>[k.t,[k.a,'balda '+k.s].filter(Boolean).join(' · '),()=>goBook(k.t)])]);
